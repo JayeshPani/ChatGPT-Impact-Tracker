@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatGPT Interaction Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1 class="title">
+    ChatGPT Impact Tracker<span class="typing-circle"></span>
+  </h1>
+  
+  <div class="tracker">
+    <label for="userType">User Type:</label>
+    <select id="userType">
+      <option value="student">Student</option>
+      <option value="professional">Professional</option>
+      <option value="patient">Patient</option>
+    </select>
+    
+    <label for="conversationType">Conversation Type:</label>
+    <select id="conversationType">
+      <option value="education">Education</option>
+      <option value="business">Business</option>
+      <option value="mental-health">Mental Health</option>
+    </select>
+    
+    <button onclick="startSession()">Start Interaction</button>
+    <button onclick="endSession()">End Interaction</button>
+  </div>
+  
+  <!-- Feedback Form -->
+  <div id="feedbackSection" style="display: none;">
+    <h2>Submit Feedback</h2>
+    
+    <label for="satisfactionLevel">Satisfaction Level:</label>
+    <select id="satisfactionLevel">
+      <option value="5">Very Satisfied</option>
+      <option value="4">Satisfied</option>
+      <option value="3">Neutral</option>
+      <option value="2">Dissatisfied</option>
+      <option value="1">Very Dissatisfied</option>
+    </select>
+    
+    <label for="sentimentScore">Sentiment Score (1-5):</label>
+    <input type="number" id="sentimentScore" min="1" max="5">
+    
+    <label for="feedbackText">Additional Feedback:</label>
+    <textarea id="feedbackText" rows="3" placeholder="Write your feedback here..."></textarea>
+    
+    <button onclick="submitFeedback()">Submit Feedback</button>
+  </div>
+
+  <!-- Session Outcome Feedback Section -->
+  <div id="outcomeFeedbackSection" style="display: none;">
+    <h2>Session Outcome Feedback</h2>
+    
+    <label for="outcomeSessionId">Session ID:</label>
+    <input type="number" id="outcomeSessionId" placeholder="Enter Session ID" required>
+    
+    <label for="outcomeStatus">Outcome Status:</label>
+    <select id="outcomeStatus">
+      <option value="resolved">Resolved</option>
+      <option value="unresolved">Unresolved</option>
+    </select>
+    
+    <label for="qualityOfAnswers">Quality of Answers (1-5):</label>
+    <input type="number" id="qualityOfAnswers" min="1" max="5" required>
+    
+    <button onclick="submitOutcomeFeedback()">Submit Outcome Feedback</button>
+  </div>
+
+  <!-- Impact Metrics Section -->
+  <div id="impactMetricsSection" style="display: none;">
+    <h2>Impact Metrics</h2>
+    <label for="impactCategory">Impact Category:</label>
+    <select id="impactCategory">
+      <option value="education">Education</option>
+      <option value="business">Business</option>
+      <option value="mental-health">Mental Health</option>
+    </select>
+  
+    <label for="beforeScore">Before Score:</label>
+    <input type="number" id="beforeScore" min="1" max="5" placeholder="Before Score">
+  
+    <label for="afterScore" style="display: none;">After Score:</label>
+    <input type="number" id="afterScore" min="1" max="5" placeholder="After Score" style="display: none;">
+    
+    <button id="logBeforeScoreButton" class="impact-button" onclick="logBeforeScore()">Log Before Score</button>
+    <button id="logAfterScoreButton" class="impact-button" onclick="logAfterScore()" style="display: none;">Log After Score</button>
+  </div>
+  
+  <!-- Interaction Logs -->
+  <div id="logContainer">
+    <h2>Interaction Logs</h2>
+    <ul id="logList"></ul>
+  </div>
+
+  <!-- Feedback Summary Section -->
+  <div id="feedbackSummarySection">
+    <h2>Aggregated Feedback Summary</h2>
+    <button onclick="showFeedbackSummary()">View Summary</button>
+    <div id="summaryContent" style="display: none;">
+      <p><strong>Average Satisfaction:</strong> <span id="averageSatisfaction"></span></p>
+      <p><strong>Average Sentiment Score:</strong> <span id="averageSentiment"></span></p>
+      <p><strong>Total Interactions:</strong> <span id="totalInteractions"></span></p>
+    </div>
+  </div>
+
+  <!-- Usage Analytics Summary -->
+  <div id="usageAnalyticsSection">
+    <h2>Usage Analytics</h2>
+    <button onclick="showUsageAnalytics()">Show Usage Analytics</button>
+    <div id="usageAnalyticsContent" style="display: none;">
+      <p><strong>Total Sessions:</strong> <span id="totalSessions">0</span></p>
+      <p><strong>Average Session Duration:</strong> <span id="averageDuration">0</span> seconds</p>
+      <p><strong>Popular Use Cases:</strong> <span id="popularUseCases">N/A</span></p>
+    </div>
+  </div>
+
+  <!-- User Segmentation and Interaction Patterns -->
+  <div id="userSegmentationSection">
+    <h2>User Segmentation and Interaction Patterns</h2>
+    <button onclick="showUserSegments()">Show User Segments</button>
+    <div id="userSegmentsContent" style="display: none;">
+      <ul id="userSegmentsList">
+        <!-- Dynamic content will be added here for each user type and interaction pattern -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- Domain-Specific Outcomes -->
+  <div id="domainOutcomesSection">
+    <h2>Domain-Specific Outcomes</h2>
+    <button onclick="showDomainOutcomes()">Show Domain Outcomes</button>
+    <div id="domainOutcomesContent" style="display: none;">
+      <label for="domainType">Domain:</label>
+      <select id="domainType">
+        <option value="education">Education</option>
+        <option value="business">Business</option>
+        <option value="mental-health">Mental Health</option>
+      </select>
+
+      <label for="outcomeMetric">Outcome Metric:</label>
+      <input type="text" id="outcomeMetric" placeholder="e.g., grade improvement, issue resolution time">
+
+      <label for="outcomeValue">Outcome Value:</label>
+      <input type="number" id="outcomeValue" placeholder="e.g., 85 (for grade improvement)">
+
+      <button onclick="logDomainOutcome()">Log Domain Outcome</button>
+      
+      <button onclick="fetchDomainOutcomes()">Fetch Domain Outcomes</button>
+      <div id="domainOutcomesDisplay" style="margin-top: 15px;"></div>
+    </div>
+  </div>
+
+  <!-- Custom Reports Section -->
+  <div id="customReportsSection">
+    <h2>Custom Reports Generation</h2>
+    
+    <label for="reportTimeframe">Timeframe:</label>
+    <input type="text" id="reportTimeframe" placeholder="e.g., Last Quarter">
+    
+    <label for="reportUserGroup">User Group:</label>
+    <select id="reportUserGroup">
+      <option value="student">Student</option>
+      <option value="professional">Professional</option>
+      <option value="patient">Patient</option>
+    </select>
+    
+    <label for="reportRegion">Region:</label>
+    <input type="text" id="reportRegion" placeholder="e.g., North America">
+    
+    <button onclick="generateCustomReport()">Generate Report</button>
+    
+    <div id="reportContent" style="display: none;">
+      <h3>Generated Report</h3>
+      <pre id="reportOutput"></pre>
+    </div>
+  </div>
+
+  <!-- Real-Time User Sentiment Monitoring -->
+  <div id="realTimeSentimentSection" style="display: none;">
+    <h2>Real-Time User Sentiment Monitoring</h2>
+    <p><strong>Current Sentiment Score:</strong> <span id="currentSentimentScore">N/A</span></p>
+    <p><strong>User Satisfaction Score:</strong> <span id="currentSatisfactionScore">N/A</span></p>
+    <p><strong>Session Progress:</strong> <span id="sessionProgress">N/A</span></p>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    let sessionId;
+    let intervalId;
+
+    function startSession() {
+      // Initialize session logic here
+      sessionId = generateSessionId(); // Replace with actual session ID generation
+      document.getElementById('feedbackSection').style.display = 'block';
+      document.getElementById('realTimeSentimentSection').style.display = 'block';
+      logInteraction('Session Started: ' + sessionId);
+    }
+
+    function endSession() {
+      // End session logic here
+      logInteraction('Session Ended: ' + sessionId);
+      clearInterval(intervalId);
+      sessionId = null;
+    }
+
+    function logInteraction(message) {
+      const logList = document.getElementById('logList');
+      const logItem = document.createElement('li');
+      logItem.textContent = message;
+      logList.appendChild(logItem);
+    }
+
+    function showFeedbackSummary() {
+      const summaryContent = document.getElementById('summaryContent');
+      summaryContent.style.display = summaryContent.style.display === 'none' ? 'block' : 'none';
+      // Add logic to update summary details
+    }
+
+    function showUsageAnalytics() {
+      const usageAnalyticsContent = document.getElementById('usageAnalyticsContent');
+      usageAnalyticsContent.style.display = usageAnalyticsContent.style.display === 'none' ? 'block' : 'none';
+      // Add logic to update usage analytics
+    }
+
+    function showUserSegments() {
+      const userSegmentsContent = document.getElementById('userSegmentsContent');
+      userSegmentsContent.style.display = userSegmentsContent.style.display === 'none' ? 'block' : 'none';
+      // Add logic to display user segments
+    }
+
+    function showDomainOutcomes() {
+      const domainOutcomesContent = document.getElementById('domainOutcomesContent');
+      domainOutcomesContent.style.display = domainOutcomesContent.style.display === 'none' ? 'block' : 'none';
+      // Add logic to update domain-specific outcomes
+    }
+
+    function generateCustomReport() {
+      const reportContent = document.getElementById('reportContent');
+      reportContent.style.display = reportContent.style.display === 'none' ? 'block' : 'none';
+      // Add report generation logic here if needed
+    }
+
+    // Add other necessary functions for submitting feedback, logging scores, etc.
+  </script>
+</body>
+</html>
